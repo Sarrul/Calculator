@@ -3,25 +3,26 @@
   height: 800px;
   margin: 100px auto;
   padding: 20px;
+  padding-top: 20px;
   border: 1px solid #ccc;
-  border-radius: 20px;
+  border-radius: 50px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   background-color: #fce9e1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 70px;
+  gap: 50px;
 }
 .result {
   width: 400px;
   height: 200px;
   border: 1px solid black;
-  border-radius: 20px;
   background-color: #f9e7e7;
   display: flex;
   justify-content: end;
   align-items: end;
-  font-size: 30px;
+  font-size: 50px;
+  margin-top: 20px;
 }
 
 .inter {
@@ -29,7 +30,6 @@
   font-optical-sizing: auto;
   font-weight: 500px;
   font-style: normal;
-  font-size: 20px;
 }
 .buttonNumbers {
   width: 90px;
@@ -40,6 +40,7 @@
   align-items: center;
   justify-content: center;
   background-color: #f9e7e7;
+  font-size: 30px;
 }
 .buttonOperators {
   width: 90px;
@@ -50,6 +51,19 @@
   align-items: center;
   justify-content: center;
   background-color: #f4cfcf;
+  font-size: 30px;
+}
+.buttonNumbers:hover {
+  background-color: #fddddd;
+  transform: scale(1.05);
+  transition: 0.2s;
+  cursor: pointer;
+}
+.buttonOperators:hover {
+  background-color: #f4d6d6;
+  cursor: pointer;
+  transform: scale(1.05);
+  transition: 0.2s;
 }
 .buttonContainer {
   display: grid;

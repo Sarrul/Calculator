@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Calculator</title>
     <link rel="stylesheet" href="./index.css" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -18,7 +18,7 @@
     <script>
       const buttons = [
         "AC",
-        "()",
+        "dlt",
         "%",
         "/",
         7,
@@ -38,31 +38,92 @@
         ".",
         "=",
       ];
+
       const container = document.createElement("div");
       const buttonContainer = document.createElement("div");
       const result = document.createElement("div");
 
-      result.classList.add("result");
+      result.classList.add("result", "inter");
       buttonContainer.classList.add("buttonContainer");
       container.classList.add("container");
       container.appendChild(result);
 
+      function formatNumbersWithCommas(expr) {
+        return expr.replace(/(\d[\d,]*\.?\d*)/g, (num) => {
+          // Remove existing commas first
+          const cleaned = num.replace(/,/g, "");
+          return Number(cleaned).toLocaleString();
+        });
+      }
+
       for (let i = 0; i < buttons.length; i++) {
         const button = document.createElement("button");
         if (typeof buttons[i] === "number") {
-          button.classList.add("buttonNumbers", "inter");
+          button.classList.add("buttonNumbers");
         } else {
-          button.classList.add("buttonOperators", "inter");
+          button.classList.add("buttonOperators");
         }
         button.innerHTML = buttons[i];
         buttonContainer.appendChild(button);
-        button.addEventListener("click", function () {
-          handleButtonClick(buttons[i]);
-        });
 
-        function handleButtonClick(buttonValue) {
-          result.textContent += buttonValue;
-        }
+        button.onclick = () => {
+          if (buttons[i] === "AC") {
+            result.innerHTML = "";
+          } else if (buttons[i] === "dlt") {
+            result.innerHTML = result.innerHTML.slice(0, -1);
+          } else if (buttons[i] === "=") {
+            try {
+              let expression = result.innerHTML;
+
+              // match number followed by %
+              expression = expression.replace(
+                /(\d+(\.\d+)?)%/g,
+                (match, number) => {
+                  // find last operator before this number
+                  const operatorMatch = expression
+                    .slice(0, expression.indexOf(match))
+                    .match(/[+\-*/](?!.*[+\-*/])/);
+                  const operator = operatorMatch ? operatorMatch[0] : null;
+
+                  if (operator === "+" || operator === "-") {
+                    // take the first number in the expression
+                    const firstNumber = parseFloat(
+                      expression.split(/[+\-*/]/)[0]
+                    );
+                    return `(${firstNumber}*(${number}/100))`;
+                  } else {
+                    // for * or / or no operator
+                    return `(${number}/100)`;
+                  }
+                }
+              );
+
+              const answer = eval(expression.replace(/,/g, ""));
+              if (!isNaN(answer)) {
+                result.innerHTML = Number(answer).toLocaleString(); // <-- add commas here
+              } else {
+                result.innerHTML = "Error";
+              }
+            } catch (e) {
+              result.innerHTML = "Error";
+            }
+          } else if (buttons[i] === "+/-") {
+            let text = result.innerHTML;
+            const numbers = text.match(/\d+(\.\d+)?/g);
+
+            console.log(numbers);
+
+            if (!numbers) return;
+
+            const lastNumber = numbers[numbers.length - 1];
+
+            result.innerHTML =
+              text.slice(0, text.lastIndexOf(lastNumber)) + `(-${lastNumber})`;
+          } else {
+            result.innerHTML += buttons[i];
+            result.innerHTML = formatNumbersWithCommas(result.innerHTML);
+          }
+        };
       }
 
       container.appendChild(buttonContainer);

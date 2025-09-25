@@ -50,7 +50,6 @@
 
       function formatNumbersWithCommas(expr) {
         return expr.replace(/(\d[\d,]*\.?\d*)/g, (num) => {
-          // Remove existing commas first
           const cleaned = num.replace(/,/g, "");
           return Number(cleaned).toLocaleString();
         });
@@ -74,25 +73,20 @@
           } else if (buttons[i] === "=") {
             try {
               let expression = result.innerHTML;
-
-              // match number followed by %
               expression = expression.replace(
                 /(\d+(\.\d+)?)%/g,
                 (match, number) => {
-                  // find last operator before this number
                   const operatorMatch = expression
                     .slice(0, expression.indexOf(match))
                     .match(/[+\-*/](?!.*[+\-*/])/);
                   const operator = operatorMatch ? operatorMatch[0] : null;
 
                   if (operator === "+" || operator === "-") {
-                    // take the first number in the expression
                     const firstNumber = parseFloat(
                       expression.split(/[+\-*/]/)[0]
                     );
                     return `(${firstNumber}*(${number}/100))`;
                   } else {
-                    // for * or / or no operator
                     return `(${number}/100)`;
                   }
                 }
@@ -100,7 +94,7 @@
 
               const answer = eval(expression.replace(/,/g, ""));
               if (!isNaN(answer)) {
-                result.innerHTML = Number(answer).toLocaleString(); // <-- add commas here
+                result.innerHTML = Number(answer).toLocaleString();
               } else {
                 result.innerHTML = "Error";
               }
